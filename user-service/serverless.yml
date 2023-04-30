@@ -1,14 +1,18 @@
 service: user-service
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs18.x
 
 functions:
-  api:
-    handler: index.handler
+  signup:
+    handler: app/handler.Signup
     events:
       - httpApi:
-          path: /
+          path: /signup
           method: get
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript

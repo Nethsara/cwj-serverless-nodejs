@@ -3,7 +3,9 @@ import { UserService } from "../service/userService";
 import { ErrorResponse } from "../utility/response";
 import middy from "@middy/core";
 import jsonBodyParser from "@middy/http-json-body-parser";
-const service = new UserService();
+import { container } from "tsyringe";
+
+const service = container.resolve(UserService);
 
 export const Signup = middy((event: APIGatewayProxyEventV2) => {
   return service.CreateUser(event);

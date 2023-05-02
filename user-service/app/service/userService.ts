@@ -1,8 +1,11 @@
-import { SucessResponse } from "../utility/response";
+import { ErrorResponse, SucessResponse } from "../utility/response";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { UserRespository } from "../repository/userRepository";
 import { autoInjectable } from "tsyringe";
-
+import { plainToClass } from "class-transformer";
+import { SignupInput } from "../models/dto/SignupInput";
+import { AppValidationError } from "../utility/error";
+import { GetHashedPassword, GetSalt } from "../utility/password";
 @autoInjectable()
 export class UserService {
   repository: UserRespository;
@@ -17,9 +20,23 @@ export class UserService {
     return SucessResponse({ message: "response from the user login" });
   }
   async CreateUser(event: APIGatewayProxyEventV2) {
-    const body = event.body;
-    await this.repository.CreateUserOperation();
-    return SucessResponse({ message: "response from the user" });
+    const input = plainToClass(SignupInput, event.body);
+    const error = await AppValidationError(input);
+    if (error) return ErrorResponse(404, error);
+
+    const salt = await GetSalt();
+    const hashedPassword = GetHashedPassword(input.password, salt);
+
+    const data = await this.repository.createAccount({
+      email: input.email,
+      password: input.password,
+      phone: input.phone,
+      userType: "BUYER",
+      salt,
+    });
+
+    // await this.repository.CreateUserOperation();
+    return SucessResponse({ input });
   }
 
   //User profile

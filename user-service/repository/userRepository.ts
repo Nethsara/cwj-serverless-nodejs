@@ -15,10 +15,10 @@ export class UserRepository {
     const result = await client.query(queryString, values);
     console.log(result);
 
-    // await client.end();
-    // if (result.rowCount > 0) {
-    //   return result.rows[0] as UserModel;
-    // }
+    await client.end();
+    if (result.rowCount > 0) {
+      return result.rows[0] as UserModel;
+    }
   }
 
   async findAccount(email: string) {

@@ -1,17 +1,13 @@
+# Use postgres/example user/password credentials
 version: "3.9"
+
 services:
-  mysql:
-    image: mysql:latest
+  postgres:
+    image: postgres:latest
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_PASSWORD=root
-      - MYSQL_DATABASE=user_service
+      - POSTGRES_DB=user_service
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD= root
     ports:
-      - "3306:3306"
-    volumes:
-      - db:/var/lib/mysql
-
-volumes:
-  db:
-    driver: local
+      - "5433:5433"

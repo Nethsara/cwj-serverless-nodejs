@@ -1,14 +1,14 @@
 import { ValidationError, validate } from "class-validator";
 
 export const AppValidationError = async (
-  params: any
+  input: any
 ): Promise<ValidationError[] | false> => {
-  const er = await validate(params, {
+  const error = await validate(input, {
     ValidationError: { target: true },
   });
 
-  if (er.length) {
-    return er;
+  if (error.length) {
+    return error;
   }
   return false;
 };
